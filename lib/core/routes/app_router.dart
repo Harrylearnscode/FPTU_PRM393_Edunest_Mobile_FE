@@ -18,6 +18,10 @@ import '../../features/chat/screens/chat_detail_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/notification/screens/notification_screen.dart';
 import '../../features/payment/screens/payment_screen.dart';
+import '../../features/lesson/screens/lesson_list_screen.dart';
+import '../../features/lesson/screens/lesson_detail_screen.dart';
+import '../../features/material/screens/material_screen.dart';
+import '../../features/tutor/screens/tutor_profile_screen.dart';
 
 class AppRouter {
   static GoRouter build(AuthProvider auth) {
@@ -128,6 +132,14 @@ class AppRouter {
               path: '/profile',
               builder: (_, __) => const ProfileScreen(),
             ),
+            GoRoute(
+              path: '/lessons',
+              builder: (_, __) => const LessonListScreen(),
+            ),
+            GoRoute(
+              path: '/materials',
+              builder: (_, __) => const MaterialScreen(),
+            ),
           ],
         ),
         GoRoute(
@@ -171,6 +183,42 @@ class AppRouter {
 
             return ChatDetailScreen(
               conversationId: id,
+            );
+          },
+        ),
+        GoRoute(
+          path: '/lessons/:id',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+
+            if (id == null) {
+              return const Scaffold(
+                body: Center(
+                  child: Text('Invalid lesson id'),
+                ),
+              );
+            }
+
+            return LessonDetailScreen(
+              lessonId: id,
+            );
+          },
+        ),
+        GoRoute(
+          path: '/tutors/:id',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+
+            if (id == null) {
+              return const Scaffold(
+                body: Center(
+                  child: Text('Invalid tutor id'),
+                ),
+              );
+            }
+
+            return TutorProfileScreen(
+              tutorId: id,
             );
           },
         ),

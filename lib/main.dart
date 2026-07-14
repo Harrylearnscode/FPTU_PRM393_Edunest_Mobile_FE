@@ -17,6 +17,10 @@ import 'features/payment/providers/payment_provider.dart';
 import 'features/payment/services/payment_service.dart';
 import 'features/profile/providers/profile_provider.dart';
 import 'features/profile/services/profile_service.dart';
+import 'features/lesson/providers/lesson_provider.dart';
+import 'features/lesson/services/lesson_service.dart';
+import 'features/material/providers/material_provider.dart';
+import 'features/material/services/material_service.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
@@ -33,6 +37,8 @@ Future<void> main() async {
   final notificationService = NotificationService(apiClient);
   final paymentService = PaymentService(apiClient);
   final profileService = ProfileService(apiClient);
+  final lessonService = LessonService(apiClient);
+  final materialService = MaterialService(apiClient);
 
   final bookingProvider = BookingProvider(
     bookingService: bookingService,
@@ -47,6 +53,8 @@ Future<void> main() async {
   final profileProvider = ProfileProvider(
     profileService: profileService,
   );
+  final lessonProvider = LessonProvider(lessonService: lessonService);
+  final materialProvider = MaterialProvider(materialService: materialService);
 
   runApp(
     EduNestApp(
@@ -57,6 +65,8 @@ Future<void> main() async {
       notificationProvider: notificationProvider,
       paymentProvider: paymentProvider,
       profileProvider: profileProvider,
+      lessonProvider: lessonProvider,
+      materialProvider: materialProvider,
     ),
   );
 }
@@ -69,6 +79,8 @@ class EduNestApp extends StatefulWidget {
   final NotificationProvider notificationProvider;
   final PaymentProvider paymentProvider;
   final ProfileProvider profileProvider;
+  final LessonProvider lessonProvider;
+  final MaterialProvider materialProvider;
 
   const EduNestApp({
     super.key,
@@ -79,6 +91,8 @@ class EduNestApp extends StatefulWidget {
     required this.notificationProvider,
     required this.paymentProvider,
     required this.profileProvider,
+    required this.lessonProvider,
+    required this.materialProvider,
   });
 
   @override
@@ -123,6 +137,8 @@ class _EduNestAppState extends State<EduNestApp> {
     widget.notificationProvider.clearSessionData();
     widget.paymentProvider.clearSessionData();
     widget.profileProvider.clearSessionData();
+    widget.lessonProvider.clearSessionData();
+    widget.materialProvider.clearSessionData();
   }
 
   @override
@@ -149,6 +165,12 @@ class _EduNestAppState extends State<EduNestApp> {
         ),
         ChangeNotifierProvider<ProfileProvider>.value(
           value: widget.profileProvider,
+        ),
+        ChangeNotifierProvider<LessonProvider>.value(
+          value: widget.lessonProvider,
+        ),
+        ChangeNotifierProvider<MaterialProvider>.value(
+          value: widget.materialProvider,
         ),
       ],
       child: MaterialApp.router(

@@ -180,6 +180,7 @@ class UiText {
   String get invalidMeetingLink => 'Invalid meeting link';
   String get openMeeting => 'Open meeting';
   String get meetingLinkNotAdded => 'Meeting link not added yet';
+  String get couldNotOpenFile => 'Could not open this material';
   String tutorName(String name) => 'Tutor: $name';
   String students(int count) => '$count student${count == 1 ? '' : 's'}';
   String lessonsN(int count) => '$count lesson${count == 1 ? '' : 's'}';

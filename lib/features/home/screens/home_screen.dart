@@ -467,14 +467,8 @@ class _TutorGroupCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Tutor profile is not integrated in this version.'),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
+                      onPressed: () =>
+                          context.go('/tutors/${first.tutorId}'),
                       icon: const Icon(Icons.badge_rounded),
                       label: Text(t.viewTutorProfile),
                       style: OutlinedButton.styleFrom(

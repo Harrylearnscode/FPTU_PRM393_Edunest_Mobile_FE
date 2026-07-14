@@ -40,6 +40,13 @@ class MainShell extends StatelessWidget {
           t.booking,
         ),
       _NavItem(
+        '/lessons',
+        Icons.menu_book_outlined,
+        Icons.menu_book,
+        t.course,
+        opensCourseTools: true,
+      ),
+      _NavItem(
         '/chat',
         Icons.chat_bubble_outline,
         Icons.chat_bubble,
