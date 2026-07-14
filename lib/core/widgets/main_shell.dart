@@ -39,20 +39,7 @@ class MainShell extends StatelessWidget {
           Icons.event_note,
           t.booking,
         ),
-      if (auth.isLearner || auth.isTutor)
-        _NavItem(
-          '/course-tools',
-          Icons.auto_stories_outlined,
-          Icons.auto_stories,
-          t.course,
-          opensCourseTools: true,
-        ),
-      _NavItem(
-        '/chat',
-        Icons.chat_bubble_outline,
-        Icons.chat_bubble,
-        t.chat,
-      ),
+
       _NavItem(
         '/notifications',
         Icons.notifications_none_rounded,

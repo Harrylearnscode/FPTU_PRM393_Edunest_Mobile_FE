@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../core/ui_text.dart';
 import '../../booking/providers/booking_provider.dart';
-import '../../chat/providers/chat_provider.dart';
 import '../../../core/widgets/error_banner.dart';
 import '../../../core/widgets/money_text.dart';
 import '../../../core/widgets/user_avatar.dart';
@@ -459,25 +458,7 @@ class _TutorGroupCard extends StatelessWidget {
             style: TextStyle(
                 fontSize: 13, color: theme.colorScheme.onSurfaceVariant),
           ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                tooltip: 'Chat',
-                onPressed: first.tutorUserId <= 0
-                    ? null
-                    : () => _startChat(context, first.tutorUserId),
-                icon: Icon(Icons.chat_bubble_rounded,
-                    color: theme.colorScheme.primary, size: 22),
-                style: IconButton.styleFrom(
-                  backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
-                  padding: const EdgeInsets.all(8),
-                ),
-              ),
-              const SizedBox(width: 4),
-              const Icon(Icons.expand_more_rounded),
-            ],
-          ),
+          trailing: const Icon(Icons.expand_more_rounded),
           children: [
             const Divider(height: 1, indent: 16, endIndent: 16),
             Padding(
@@ -486,7 +467,14 @@ class _TutorGroupCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () => context.push('/tutors/${first.tutorId}'),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Tutor profile is not integrated in this version.'),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
                       icon: const Icon(Icons.badge_rounded),
                       label: Text(t.viewTutorProfile),
                       style: OutlinedButton.styleFrom(
@@ -507,13 +495,7 @@ class _TutorGroupCard extends StatelessWidget {
     );
   }
 
-  Future<void> _startChat(BuildContext context, int tutorUserId) async {
-    try {
-      final conversation =
-          await context.read<ChatProvider>().startConversation(tutorUserId);
-      if (context.mounted) context.push('/chat/${conversation.conversationId}');
-    } catch (_) {}
-  }
+
 }
 
 class _LearnerCourseTile extends StatelessWidget {

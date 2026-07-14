@@ -6,6 +6,7 @@ import '../../../core/ui_text.dart';
 import '../providers/booking_provider.dart';
 import '../../../core/widgets/error_banner.dart';
 import '../../../core/widgets/money_text.dart';
+import '../../payment/providers/payment_provider.dart';
 import '../models/booking_models.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -350,12 +351,12 @@ class _BookingCard extends StatelessWidget {
   }
 
   Future<void> _pay(BuildContext context, int bookingId) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Payment feature is not integrated in this version.'),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    final data = context.read<PaymentProvider>();
+    try {
+      final payment = await data.createPayment(bookingId);
+      if (!context.mounted) return;
+      context.push('/payment', extra: payment);
+    } catch (_) {}
   }
 
   Future<void> _cancel(BuildContext context, int bookingId) async {

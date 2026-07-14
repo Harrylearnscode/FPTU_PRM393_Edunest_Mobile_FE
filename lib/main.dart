@@ -9,12 +9,6 @@ import 'core/routes/app_router.dart';
 import 'features/auth/providers/auth_provider.dart';
 import 'features/booking/providers/booking_provider.dart';
 import 'features/booking/services/booking_service.dart';
-import 'features/chat/providers/chat_provider.dart';
-import 'features/chat/services/chat_service.dart';
-import 'features/lesson/providers/lesson_provider.dart';
-import 'features/lesson/services/lesson_service.dart';
-import 'features/materials/providers/material_provider.dart';
-import 'features/materials/services/material_service.dart';
 import 'features/notification/providers/notification_provider.dart';
 import 'features/notification/services/notification_service.dart';
 import 'features/payment/providers/payment_provider.dart';
@@ -33,22 +27,12 @@ Future<void> main() async {
   await authProvider.bootstrap();
 
   final bookingService = BookingService(apiClient);
-  final chatService = ChatService(apiClient);
-  final lessonService = LessonService(apiClient);
-  final materialService = MaterialService(apiClient);
   final notificationService = NotificationService(apiClient);
   final paymentService = PaymentService(apiClient);
   final profileService = ProfileService(apiClient);
 
   final bookingProvider = BookingProvider(
     bookingService: bookingService,
-  );
-  final chatProvider = ChatProvider(chatService: chatService);
-  final lessonProvider = LessonProvider(
-    lessonService: lessonService,
-  );
-  final materialProvider = MaterialProvider(
-    materialService: materialService,
   );
   final notificationProvider = NotificationProvider(
     notificationService: notificationService,
@@ -65,9 +49,6 @@ Future<void> main() async {
       apiClient: apiClient,
       authProvider: authProvider,
       bookingProvider: bookingProvider,
-      chatProvider: chatProvider,
-      lessonProvider: lessonProvider,
-      materialProvider: materialProvider,
       notificationProvider: notificationProvider,
       paymentProvider: paymentProvider,
       profileProvider: profileProvider,
@@ -79,9 +60,6 @@ class EduNestApp extends StatefulWidget {
   final ApiClient apiClient;
   final AuthProvider authProvider;
   final BookingProvider bookingProvider;
-  final ChatProvider chatProvider;
-  final LessonProvider lessonProvider;
-  final MaterialProvider materialProvider;
   final NotificationProvider notificationProvider;
   final PaymentProvider paymentProvider;
   final ProfileProvider profileProvider;
@@ -91,9 +69,6 @@ class EduNestApp extends StatefulWidget {
     required this.apiClient,
     required this.authProvider,
     required this.bookingProvider,
-    required this.chatProvider,
-    required this.lessonProvider,
-    required this.materialProvider,
     required this.notificationProvider,
     required this.paymentProvider,
     required this.profileProvider,
@@ -138,9 +113,6 @@ class _EduNestAppState extends State<EduNestApp> {
 
     _activeUserId = nextUserId;
     widget.bookingProvider.clearSessionData();
-    widget.chatProvider.clearSessionData();
-    widget.lessonProvider.clearSessionData();
-    widget.materialProvider.clearSessionData();
     widget.notificationProvider.clearSessionData();
     widget.paymentProvider.clearSessionData();
     widget.profileProvider.clearSessionData();
@@ -158,15 +130,6 @@ class _EduNestAppState extends State<EduNestApp> {
         ),
         ChangeNotifierProvider<BookingProvider>.value(
           value: widget.bookingProvider,
-        ),
-        ChangeNotifierProvider<ChatProvider>.value(
-          value: widget.chatProvider,
-        ),
-        ChangeNotifierProvider<LessonProvider>.value(
-          value: widget.lessonProvider,
-        ),
-        ChangeNotifierProvider<MaterialProvider>.value(
-          value: widget.materialProvider,
         ),
         ChangeNotifierProvider<NotificationProvider>.value(
           value: widget.notificationProvider,
