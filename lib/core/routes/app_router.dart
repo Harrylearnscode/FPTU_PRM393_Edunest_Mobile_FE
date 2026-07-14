@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/providers/auth_provider.dart';
@@ -13,6 +13,8 @@ import '../../features/profile/screens/profile_screen.dart';
 import '../../features/profile/screens/terms_of_service_screen.dart' as legal;
 import '../../features/booking/screens/booking_screen.dart';
 import '../../features/booking/screens/create_availability_screen.dart';
+import '../../features/chat/screens/chat_screen.dart';
+import '../../features/chat/screens/chat_detail_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/notification/screens/notification_screen.dart';
 import '../../features/payment/screens/payment_screen.dart';
@@ -115,6 +117,10 @@ class AppRouter {
               builder: (_, __) => const BookingScreen(),
             ),
             GoRoute(
+              path: '/chat',
+              builder: (_, __) => const ChatScreen(),
+            ),
+            GoRoute(
               path: '/notifications',
               builder: (_, __) => const NotificationScreen(),
             ),
@@ -149,6 +155,24 @@ class AppRouter {
         GoRoute(
           path: '/terms-of-service',
           builder: (_, __) => const legal.TermsOfServiceScreen(),
+        ),
+        GoRoute(
+          path: '/chat/:id',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+
+            if (id == null) {
+              return const Scaffold(
+                body: Center(
+                  child: Text('Invalid conversation id'),
+                ),
+              );
+            }
+
+            return ChatDetailScreen(
+              conversationId: id,
+            );
+          },
         ),
       ],
     );
