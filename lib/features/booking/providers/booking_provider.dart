@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../../core/network/api_utils.dart';
 import '../models/booking_models.dart';
 import '../services/booking_service.dart';
+import '../../chat/models/chat_models.dart';
 
 class BookingProvider extends ChangeNotifier {
   final BookingService bookingService;
@@ -211,5 +212,14 @@ class BookingProvider extends ChangeNotifier {
         normalized != 'canceled' &&
         normalized != 'expired' &&
         normalized != 'rejected';
+  }
+
+  int? tutorIdForConversation(ConversationModel conversation) {
+    for (final availability in availabilities) {
+      if (availability.tutorUserId == conversation.otherUserId) {
+        return availability.tutorId;
+      }
+    }
+    return null;
   }
 }

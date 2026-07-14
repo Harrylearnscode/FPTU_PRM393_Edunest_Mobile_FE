@@ -39,7 +39,12 @@ class MainShell extends StatelessWidget {
           Icons.event_note,
           t.booking,
         ),
-
+      _NavItem(
+        '/chat',
+        Icons.chat_bubble_outline,
+        Icons.chat_bubble,
+        t.chat,
+      ),
       _NavItem(
         '/notifications',
         Icons.notifications_none_rounded,
