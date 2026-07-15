@@ -12,16 +12,16 @@ import '../../features/auth/screens/verify_email_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/profile/screens/terms_of_service_screen.dart' as legal;
 import '../../features/booking/screens/booking_screen.dart';
+import '../../features/tutor/screens/tutor_detail_screen.dart';
 import '../../features/booking/screens/create_availability_screen.dart';
 import '../../features/chat/screens/chat_screen.dart';
 import '../../features/chat/screens/chat_detail_screen.dart';
 import '../../features/home/screens/home_screen.dart';
+import '../../features/lesson/screens/lesson_screen.dart';
+import '../../features/lesson/screens/lesson_detail_screen.dart';
+import '../../features/materials/screens/course_materials_screen.dart';
 import '../../features/notification/screens/notification_screen.dart';
 import '../../features/payment/screens/payment_screen.dart';
-import '../../features/lesson/screens/lesson_list_screen.dart';
-import '../../features/lesson/screens/lesson_detail_screen.dart';
-import '../../features/material/screens/material_screen.dart';
-import '../../features/tutor/screens/tutor_profile_screen.dart';
 
 class AppRouter {
   static GoRouter build(AuthProvider auth) {
@@ -121,6 +121,14 @@ class AppRouter {
               builder: (_, __) => const BookingScreen(),
             ),
             GoRoute(
+              path: '/lessons',
+              builder: (_, __) => const LessonScreen(),
+            ),
+            GoRoute(
+              path: '/materials',
+              builder: (_, __) => const CourseMaterialsScreen(),
+            ),
+            GoRoute(
               path: '/chat',
               builder: (_, __) => const ChatScreen(),
             ),
@@ -131,14 +139,6 @@ class AppRouter {
             GoRoute(
               path: '/profile',
               builder: (_, __) => const ProfileScreen(),
-            ),
-            GoRoute(
-              path: '/lessons',
-              builder: (_, __) => const LessonListScreen(),
-            ),
-            GoRoute(
-              path: '/materials',
-              builder: (_, __) => const MaterialScreen(),
             ),
           ],
         ),
@@ -165,28 +165,6 @@ class AppRouter {
           builder: (_, __) => const CreateAvailabilityScreen(),
         ),
         GoRoute(
-          path: '/terms-of-service',
-          builder: (_, __) => const legal.TermsOfServiceScreen(),
-        ),
-        GoRoute(
-          path: '/chat/:id',
-          builder: (context, state) {
-            final id = int.tryParse(state.pathParameters['id'] ?? '');
-
-            if (id == null) {
-              return const Scaffold(
-                body: Center(
-                  child: Text('Invalid conversation id'),
-                ),
-              );
-            }
-
-            return ChatDetailScreen(
-              conversationId: id,
-            );
-          },
-        ),
-        GoRoute(
           path: '/lessons/:id',
           builder: (context, state) {
             final id = int.tryParse(state.pathParameters['id'] ?? '');
@@ -211,14 +189,32 @@ class AppRouter {
 
             if (id == null) {
               return const Scaffold(
+                body: Center(child: Text('Invalid tutor id')),
+              );
+            }
+
+            return TutorDetailScreen(tutorId: id);
+          },
+        ),
+        GoRoute(
+          path: '/terms-of-service',
+          builder: (_, __) => const legal.TermsOfServiceScreen(),
+        ),
+        GoRoute(
+          path: '/chat/:id',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+
+            if (id == null) {
+              return const Scaffold(
                 body: Center(
-                  child: Text('Invalid tutor id'),
+                  child: Text('Invalid conversation id'),
                 ),
               );
             }
 
-            return TutorProfileScreen(
-              tutorId: id,
+            return ChatDetailScreen(
+              conversationId: id,
             );
           },
         ),

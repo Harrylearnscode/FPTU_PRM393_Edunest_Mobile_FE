@@ -39,13 +39,14 @@ class MainShell extends StatelessWidget {
           Icons.event_note,
           t.booking,
         ),
-      _NavItem(
-        '/lessons',
-        Icons.menu_book_outlined,
-        Icons.menu_book,
-        t.course,
-        opensCourseTools: true,
-      ),
+      if (auth.isLearner || auth.isTutor)
+        _NavItem(
+          '/course-tools',
+          Icons.auto_stories_outlined,
+          Icons.auto_stories,
+          t.course,
+          opensCourseTools: true,
+        ),
       _NavItem(
         '/chat',
         Icons.chat_bubble_outline,
@@ -68,7 +69,7 @@ class MainShell extends StatelessWidget {
     ];
 
     final current = items.indexWhere(
-      (item) {
+          (item) {
         if (item.opensCourseTools) return isCourseLocation(location);
         return location == item.path || location.startsWith('${item.path}/');
       },
@@ -133,11 +134,11 @@ class _NavItem {
   final int badgeCount;
 
   const _NavItem(
-    this.path,
-    this.icon,
-    this.selectedIcon,
-    this.label, {
-    this.opensCourseTools = false,
-    this.badgeCount = 0,
-  });
+      this.path,
+      this.icon,
+      this.selectedIcon,
+      this.label, {
+        this.opensCourseTools = false,
+        this.badgeCount = 0,
+      });
 }

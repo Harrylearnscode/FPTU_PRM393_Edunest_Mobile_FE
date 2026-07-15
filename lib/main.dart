@@ -11,16 +11,16 @@ import 'features/booking/providers/booking_provider.dart';
 import 'features/booking/services/booking_service.dart';
 import 'features/chat/providers/chat_provider.dart';
 import 'features/chat/services/chat_service.dart';
+import 'features/lesson/providers/lesson_provider.dart';
+import 'features/lesson/services/lesson_service.dart';
+import 'features/materials/providers/material_provider.dart';
+import 'features/materials/services/material_service.dart';
 import 'features/notification/providers/notification_provider.dart';
 import 'features/notification/services/notification_service.dart';
 import 'features/payment/providers/payment_provider.dart';
 import 'features/payment/services/payment_service.dart';
 import 'features/profile/providers/profile_provider.dart';
 import 'features/profile/services/profile_service.dart';
-import 'features/lesson/providers/lesson_provider.dart';
-import 'features/lesson/services/lesson_service.dart';
-import 'features/material/providers/material_provider.dart';
-import 'features/material/services/material_service.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
@@ -34,16 +34,22 @@ Future<void> main() async {
 
   final bookingService = BookingService(apiClient);
   final chatService = ChatService(apiClient);
+  final lessonService = LessonService(apiClient);
+  final materialService = MaterialService(apiClient);
   final notificationService = NotificationService(apiClient);
   final paymentService = PaymentService(apiClient);
   final profileService = ProfileService(apiClient);
-  final lessonService = LessonService(apiClient);
-  final materialService = MaterialService(apiClient);
 
   final bookingProvider = BookingProvider(
     bookingService: bookingService,
   );
   final chatProvider = ChatProvider(chatService: chatService);
+  final lessonProvider = LessonProvider(
+    lessonService: lessonService,
+  );
+  final materialProvider = MaterialProvider(
+    materialService: materialService,
+  );
   final notificationProvider = NotificationProvider(
     notificationService: notificationService,
   );
@@ -53,8 +59,6 @@ Future<void> main() async {
   final profileProvider = ProfileProvider(
     profileService: profileService,
   );
-  final lessonProvider = LessonProvider(lessonService: lessonService);
-  final materialProvider = MaterialProvider(materialService: materialService);
 
   runApp(
     EduNestApp(
@@ -62,11 +66,11 @@ Future<void> main() async {
       authProvider: authProvider,
       bookingProvider: bookingProvider,
       chatProvider: chatProvider,
+      lessonProvider: lessonProvider,
+      materialProvider: materialProvider,
       notificationProvider: notificationProvider,
       paymentProvider: paymentProvider,
       profileProvider: profileProvider,
-      lessonProvider: lessonProvider,
-      materialProvider: materialProvider,
     ),
   );
 }
@@ -76,11 +80,11 @@ class EduNestApp extends StatefulWidget {
   final AuthProvider authProvider;
   final BookingProvider bookingProvider;
   final ChatProvider chatProvider;
+  final LessonProvider lessonProvider;
+  final MaterialProvider materialProvider;
   final NotificationProvider notificationProvider;
   final PaymentProvider paymentProvider;
   final ProfileProvider profileProvider;
-  final LessonProvider lessonProvider;
-  final MaterialProvider materialProvider;
 
   const EduNestApp({
     super.key,
@@ -88,11 +92,11 @@ class EduNestApp extends StatefulWidget {
     required this.authProvider,
     required this.bookingProvider,
     required this.chatProvider,
+    required this.lessonProvider,
+    required this.materialProvider,
     required this.notificationProvider,
     required this.paymentProvider,
     required this.profileProvider,
-    required this.lessonProvider,
-    required this.materialProvider,
   });
 
   @override
@@ -107,7 +111,7 @@ class _EduNestAppState extends State<EduNestApp> {
   void initState() {
     super.initState();
     _activeUserId =
-        widget.authProvider.isAuthenticated ? widget.authProvider.userId : null;
+    widget.authProvider.isAuthenticated ? widget.authProvider.userId : null;
 
     widget.authProvider.addListener(_handleAuthChanged);
 
@@ -126,7 +130,7 @@ class _EduNestAppState extends State<EduNestApp> {
 
   void _handleAuthChanged() {
     final nextUserId =
-        widget.authProvider.isAuthenticated ? widget.authProvider.userId : null;
+    widget.authProvider.isAuthenticated ? widget.authProvider.userId : null;
 
     if (_activeUserId == nextUserId) {
       return;
@@ -134,11 +138,12 @@ class _EduNestAppState extends State<EduNestApp> {
 
     _activeUserId = nextUserId;
     widget.bookingProvider.clearSessionData();
+    widget.chatProvider.clearSessionData();
+    widget.lessonProvider.clearSessionData();
+    widget.materialProvider.clearSessionData();
     widget.notificationProvider.clearSessionData();
     widget.paymentProvider.clearSessionData();
     widget.profileProvider.clearSessionData();
-    widget.lessonProvider.clearSessionData();
-    widget.materialProvider.clearSessionData();
   }
 
   @override
@@ -157,6 +162,12 @@ class _EduNestAppState extends State<EduNestApp> {
         ChangeNotifierProvider<ChatProvider>.value(
           value: widget.chatProvider,
         ),
+        ChangeNotifierProvider<LessonProvider>.value(
+          value: widget.lessonProvider,
+        ),
+        ChangeNotifierProvider<MaterialProvider>.value(
+          value: widget.materialProvider,
+        ),
         ChangeNotifierProvider<NotificationProvider>.value(
           value: widget.notificationProvider,
         ),
@@ -165,12 +176,6 @@ class _EduNestAppState extends State<EduNestApp> {
         ),
         ChangeNotifierProvider<ProfileProvider>.value(
           value: widget.profileProvider,
-        ),
-        ChangeNotifierProvider<LessonProvider>.value(
-          value: widget.lessonProvider,
-        ),
-        ChangeNotifierProvider<MaterialProvider>.value(
-          value: widget.materialProvider,
         ),
       ],
       child: MaterialApp.router(
