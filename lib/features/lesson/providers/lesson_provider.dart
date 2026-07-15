@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/network/api_utils.dart';
-import '../models/lesson_models.dart';
+import '../models/lesson_model.dart';
 import '../services/lesson_service.dart';
 
 class LessonProvider extends ChangeNotifier {
@@ -13,19 +13,15 @@ class LessonProvider extends ChangeNotifier {
   String? error;
 
   List<LessonModel> lessons = [];
-  LessonModel? selectedLesson;
+  final Map<int, LessonDetailModel> lessonDetails = {};
 
   void clearSessionData() {
     loading = false;
     error = null;
     lessons = [];
-    selectedLesson = null;
+    lessonDetails.clear();
     notifyListeners();
   }
-
-  List<LessonModel> get lessonsNeedingAttention => lessons
-      .where((lesson) => lesson.timeState == LessonTimeState.endedNeedsAction)
-      .toList();
 
   Future<void> loadLessons() async {
     await _guard(() async {
@@ -33,52 +29,37 @@ class LessonProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> loadLessonDetail(int lessonId) async {
+  Future<void> completeLesson(int lessonId) async {
     await _guard(() async {
-      selectedLesson = await lessonService.getLessonById(lessonId);
+      await lessonService.completeLesson(lessonId);
+      lessons = await lessonService.getMyLessons();
     });
   }
 
-  Future<void> updateMeetingLink(int lessonId, String meetingLink) async {
+  Future<void> loadLessonDetail(int lessonId) async {
     await _guard(() async {
-      final updated = await lessonService.updateMeetingLink(
+      lessonDetails[lessonId] = await lessonService.getLessonDetail(lessonId);
+    });
+  }
+
+  Future<void> setLessonMeetingLink({
+    required int lessonId,
+    required String meetingLink,
+  }) async {
+    await _guard(() async {
+      lessonDetails[lessonId] = await lessonService.setMeetingLink(
         lessonId: lessonId,
         meetingLink: meetingLink,
       );
-      _applyUpdatedLesson(updated);
     });
   }
 
-  Future<void> markAttendance({
-    required int lessonId,
-    required int studentUserId,
-    required String status,
-  }) async {
+  Future<void> completeLessonGroup(int lessonId) async {
     await _guard(() async {
-      final updated = await lessonService.markAttendance(
-        lessonId: lessonId,
-        studentUserId: studentUserId,
-        status: status,
-      );
-      _applyUpdatedLesson(updated);
+      final detail = await lessonService.completeLessonGroup(lessonId);
+      lessonDetails[lessonId] = detail;
+      lessons = await lessonService.getMyLessons();
     });
-  }
-
-  Future<void> completeLesson(int lessonId) async {
-    await _guard(() async {
-      final updated = await lessonService.completeLesson(lessonId);
-      _applyUpdatedLesson(updated);
-    });
-  }
-
-  void _applyUpdatedLesson(LessonModel updated) {
-    selectedLesson = updated;
-    final index = lessons.indexWhere((l) => l.lessonId == updated.lessonId);
-    if (index >= 0) {
-      lessons[index] = updated;
-    } else {
-      lessons.add(updated);
-    }
   }
 
   Future<void> _guard(Future<void> Function() task) async {

@@ -12,133 +12,143 @@ class MaterialProvider extends ChangeNotifier {
   bool loading = false;
   String? error;
 
-  Map<int, List<MaterialSectionModel>> sectionsByAvailability = {};
-  int? selectedAvailabilityId;
-
-  List<MaterialSectionModel> get selectedSections =>
-      sectionsByAvailability[selectedAvailabilityId] ?? const [];
+  final Map<int, List<CourseMaterialSectionModel>> courseMaterials = {};
+  final Map<int, DateTime> _loadedAt = {};
+  final Map<int, Future<void>> _loads = {};
+  static const Duration cacheDuration = Duration(seconds: 45);
 
   void clearSessionData() {
     loading = false;
     error = null;
-    sectionsByAvailability = {};
-    selectedAvailabilityId = null;
+    courseMaterials.clear();
+    _loadedAt.clear();
+    _loads.clear();
     notifyListeners();
   }
 
-  void selectAvailability(int availabilityId) {
-    selectedAvailabilityId = availabilityId;
-    notifyListeners();
-    loadSections(availabilityId);
-  }
+  Future<void> loadCourseMaterials(int availabilityId, {bool force = false}) {
+    if (!force && _loads[availabilityId] != null)
+      return _loads[availabilityId]!;
+    if (!force &&
+        courseMaterials.containsKey(availabilityId) &&
+        _isFresh(_loadedAt[availabilityId])) {
+      return Future.value();
+    }
 
-  void clearSelection() {
-    selectedAvailabilityId = null;
-    notifyListeners();
-  }
-
-  Future<void> loadSections(int availabilityId) async {
-    await _guard(() async {
-      sectionsByAvailability[availabilityId] =
-          await materialService.getSections(availabilityId);
+    final load = _guard(() async {
+      courseMaterials[availabilityId] =
+          await materialService.getCourseMaterials(availabilityId);
+      _loadedAt[availabilityId] = DateTime.now();
+    });
+    _loads[availabilityId] = load;
+    return load.whenComplete(() {
+      if (_loads[availabilityId] == load) _loads.remove(availabilityId);
     });
   }
 
-  Future<void> addSection({
+  Future<void> createMaterialSection({
     required int availabilityId,
     required String title,
     String? description,
   }) async {
     await _guard(() async {
-      await materialService.createSection(
+      await materialService.createMaterialSection(
         availabilityId: availabilityId,
         title: title,
         description: description,
       );
-      sectionsByAvailability[availabilityId] =
-          await materialService.getSections(availabilityId);
+      await _reload(availabilityId);
     });
   }
 
-  Future<void> editSection({
+  Future<void> updateMaterialSection({
     required int availabilityId,
     required int sectionId,
     required String title,
     String? description,
   }) async {
     await _guard(() async {
-      await materialService.updateSection(
+      await materialService.updateMaterialSection(
         sectionId: sectionId,
         title: title,
         description: description,
       );
-      sectionsByAvailability[availabilityId] =
-          await materialService.getSections(availabilityId);
+      await _reload(availabilityId);
     });
   }
 
-  Future<void> removeSection({
+  Future<void> deleteMaterialSection({
     required int availabilityId,
     required int sectionId,
   }) async {
     await _guard(() async {
-      await materialService.deleteSection(sectionId);
-      sectionsByAvailability[availabilityId] =
-          await materialService.getSections(availabilityId);
+      await materialService.deleteMaterialSection(sectionId);
+      await _reload(availabilityId);
     });
   }
 
-  Future<void> addMaterialItem({
+  Future<void> createMaterialItem({
     required int availabilityId,
     required int sectionId,
     required String title,
     String? description,
-    String? fileUrl,
+    String? linkUrl,
     String? filePath,
   }) async {
     await _guard(() async {
       await materialService.createMaterialItem(
+        availabilityId: availabilityId,
         sectionId: sectionId,
         title: title,
         description: description,
-        fileUrl: fileUrl,
+        linkUrl: linkUrl,
         filePath: filePath,
       );
-      sectionsByAvailability[availabilityId] =
-          await materialService.getSections(availabilityId);
+      await _reload(availabilityId);
     });
   }
 
-  Future<void> editMaterialItem({
+  Future<void> updateMaterialItem({
     required int availabilityId,
     required int materialId,
     required String title,
     String? description,
-    String? fileUrl,
+    String? linkUrl,
     String? filePath,
+    int? sectionId,
   }) async {
     await _guard(() async {
       await materialService.updateMaterialItem(
         materialId: materialId,
         title: title,
         description: description,
-        fileUrl: fileUrl,
+        linkUrl: linkUrl,
         filePath: filePath,
+        sectionId: sectionId,
       );
-      sectionsByAvailability[availabilityId] =
-          await materialService.getSections(availabilityId);
+      await _reload(availabilityId);
     });
   }
 
-  Future<void> removeMaterialItem({
+  Future<void> deleteMaterialItem({
     required int availabilityId,
     required int materialId,
   }) async {
     await _guard(() async {
       await materialService.deleteMaterialItem(materialId);
-      sectionsByAvailability[availabilityId] =
-          await materialService.getSections(availabilityId);
+      await _reload(availabilityId);
     });
+  }
+
+  Future<void> _reload(int availabilityId) async {
+    courseMaterials[availabilityId] =
+        await materialService.getCourseMaterials(availabilityId);
+    _loadedAt[availabilityId] = DateTime.now();
+  }
+
+  bool _isFresh(DateTime? loadedAt) {
+    if (loadedAt == null) return false;
+    return DateTime.now().difference(loadedAt) < cacheDuration;
   }
 
   Future<void> _guard(Future<void> Function() task) async {

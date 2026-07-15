@@ -1,6 +1,6 @@
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_utils.dart';
-import '../models/lesson_models.dart';
+import '../models/lesson_model.dart';
 
 class LessonService {
   final ApiClient apiClient;
@@ -12,36 +12,33 @@ class LessonService {
     return ApiUtils.list(res.data).map((e) => LessonModel.fromJson(e)).toList();
   }
 
-  Future<LessonModel> getLessonById(int lessonId) async {
-    final res = await apiClient.dio.get('/api/lesson/$lessonId');
-    return LessonModel.fromJson(ApiUtils.asMap(res.data));
+  Future<LessonDetailModel> getLessonDetail(int lessonId) async {
+    final res = await apiClient.dio.get('/api/lesson/$lessonId/detail');
+    return LessonDetailModel.fromJson(ApiUtils.asMap(res.data));
   }
 
-  Future<LessonModel> updateMeetingLink({
-    required int lessonId,
-    required String meetingLink,
-  }) async {
-    final res = await apiClient.dio.patch(
+  Future<LessonDetailModel> setMeetingLink(
+      {required int lessonId, required String meetingLink}) async {
+    final res = await apiClient.dio.post(
       '/api/lesson/$lessonId/meeting-link',
       data: {'meetingLink': meetingLink},
     );
-    return LessonModel.fromJson(ApiUtils.asMap(res.data));
+    return LessonDetailModel.fromJson(ApiUtils.asMap(res.data));
   }
 
-  Future<LessonModel> markAttendance({
-    required int lessonId,
-    required int studentUserId,
-    required String status,
-  }) async {
-    final res = await apiClient.dio.patch(
-      '/api/lesson/$lessonId/attendance',
-      data: {'studentUserId': studentUserId, 'status': status},
-    );
-    return LessonModel.fromJson(ApiUtils.asMap(res.data));
+  Future<LessonDetailModel> completeLessonGroup(int lessonId) async {
+    final res =
+        await apiClient.dio.post('/api/lesson/$lessonId/complete-group');
+    return LessonDetailModel.fromJson(ApiUtils.asMap(res.data));
   }
 
-  Future<LessonModel> completeLesson(int lessonId) async {
-    final res = await apiClient.dio.patch('/api/lesson/$lessonId/complete');
+  Future<LessonModel> completeLesson(int lessonId, {String? note}) async {
+    final body = <String, dynamic>{'note': note};
+    body.removeWhere((key, value) =>
+        value == null || (value is String && value.trim().isEmpty));
+
+    final res =
+        await apiClient.dio.post('/api/lesson/$lessonId/complete', data: body);
     return LessonModel.fromJson(ApiUtils.asMap(res.data));
   }
 }
