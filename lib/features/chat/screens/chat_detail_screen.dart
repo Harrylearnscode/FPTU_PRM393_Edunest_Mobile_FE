@@ -12,6 +12,8 @@ import '../../booking/providers/booking_provider.dart';
 import '../../profile/providers/profile_provider.dart';
 import '../models/chat_models.dart';
 import '../providers/chat_provider.dart';
+import '../widgets/message_bubble.dart';
+import '../widgets/message_input_bar.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final int conversationId;
@@ -171,11 +173,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   String _conversationTitle(
-      ChatProvider data,
-      ProfileProvider profile,
-      int? currentUserId,
-      ConversationModel? conversation,
-      ) {
+    ChatProvider data,
+    ProfileProvider profile,
+    int? currentUserId,
+    ConversationModel? conversation,
+  ) {
     if (conversation == null) {
       return 'Conversation #${widget.conversationId}';
     }
@@ -185,7 +187,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     }
 
     final otherIds =
-    conversation.userIds.where((id) => id != currentUserId).toList();
+        conversation.userIds.where((id) => id != currentUserId).toList();
 
     if (otherIds.isEmpty) {
       return 'Conversation #${widget.conversationId}';
@@ -295,129 +297,70 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               onRefresh: () => _loadMessages(),
               child: messages.isEmpty
                   ? ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: [
-                  const SizedBox(height: 160),
-                  Column(
-                    children: [
-                      UserAvatar(
-                        imageUrl: otherAvatarUrl,
-                        name: titleName,
-                        radius: 34,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        t.noMessagesYet,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        const SizedBox(height: 160),
+                        Column(
+                          children: [
+                            UserAvatar(
+                              imageUrl: otherAvatarUrl,
+                              name: titleName,
+                              radius: 34,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              t.noMessagesYet,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Start the conversation 👋',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colors.onSurface.withValues(alpha: 0.45),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Start the conversation ðŸ‘‹',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colors.onSurface.withValues(alpha: 0.45),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              )
+                      ],
+                    )
                   : ListView.builder(
-                controller: scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 18),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final message = messages[index];
+                      controller: scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 18),
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
 
-                  final mine = auth.userId != null &&
-                      message.userId == auth.userId;
+                        final mine = auth.userId != null &&
+                            message.userId == auth.userId;
 
-                  final senderName = mine
-                      ? t.you
-                      : _senderName(
-                    data: data,
-                    profile: profile,
-                    conversation: conversation,
-                    messageUserId: message.userId,
-                  );
+                        final senderName = mine
+                            ? t.you
+                            : _senderName(
+                                data: data,
+                                profile: profile,
+                                conversation: conversation,
+                                messageUserId: message.userId,
+                              );
 
-                  return _MessageRow(
-                    mine: mine,
-                    message: message.content,
-                    senderName: senderName,
-                    avatarUrl: mine ? null : otherAvatarUrl,
-                    time: formatter.format(message.createdAt.toLocal()),
-                  );
-                },
-              ),
+                        return MessageBubble(
+                          mine: mine,
+                          message: message.content,
+                          senderName: senderName,
+                          avatarUrl: mine ? null : otherAvatarUrl,
+                          time: formatter.format(message.createdAt.toLocal()),
+                        );
+                      },
+                    ),
             ),
           ),
-          SafeArea(
-            child: Container(
-              decoration: BoxDecoration(
-                color: colors.surface,
-                border: Border(
-                  top: BorderSide(
-                    color: colors.outlineVariant.withValues(alpha: 0.5),
-                    width: 0.5,
-                  ),
-                ),
-              ),
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: content,
-                      minLines: 1,
-                      maxLines: 4,
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => _sendMessage(),
-                      decoration: InputDecoration(
-                        hintText: t.messageHint,
-                        filled: true,
-                        fillColor: colors.surfaceContainerLowest,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(
-                            color: colors.outlineVariant,
-                            width: 0.5,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(
-                            color: colors.outlineVariant,
-                            width: 0.5,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  FilledButton(
-                    onPressed: sending ? null : _sendMessage,
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(50, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    child: sending
-                        ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    )
-                        : const Icon(Icons.send_rounded),
-                  ),
-                ],
-              ),
-            ),
+          MessageInputBar(
+            controller: content,
+            sending: sending,
+            hintText: t.messageHint,
+            onSend: _sendMessage,
           ),
         ],
       ),
@@ -440,6 +383,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 }
 
+// Legacy layout retained temporarily for visual comparison during the refactor.
+// ignore: unused_element
 class _MessageRow extends StatelessWidget {
   final bool mine;
   final String message;
@@ -509,7 +454,7 @@ class _MessageRow extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '$senderName â€¢ $time',
+            '$senderName • $time',
             style: theme.textTheme.bodySmall?.copyWith(
               color: colors.onSurface.withValues(alpha: 0.55),
             ),

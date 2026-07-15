@@ -46,6 +46,15 @@ class BookingProvider extends ChangeNotifier {
     return subjectNameById(availability.subjectId);
   }
 
+  AvailabilityModel? availabilityForBooking(BookingModel booking) {
+    for (final availability in availabilities) {
+      if (availability.availabilityId == booking.availabilityId) {
+        return availability;
+      }
+    }
+    return null;
+  }
+
   Future<void> loadSubjects() async {
     await _guard(() async {
       subjects = await bookingService.getSubjects();
@@ -109,8 +118,14 @@ class BookingProvider extends ChangeNotifier {
 
   Future<void> loadBookings() async {
     await _guard(() async {
-      subjects = await bookingService.getSubjects();
-      bookings = await bookingService.getMyBookings();
+      final results = await Future.wait([
+        bookingService.getSubjects(),
+        bookingService.getMyBookings(),
+        bookingService.getAvailabilities(),
+      ]);
+      subjects = results[0] as List<SubjectModel>;
+      bookings = results[1] as List<BookingModel>;
+      availabilities = results[2] as List<AvailabilityModel>;
     });
   }
 
@@ -180,8 +195,6 @@ class BookingProvider extends ChangeNotifier {
       }
     });
   }
-
-
 
   bool hasBookedTutor(int tutorId) {
     return bookings.any(
