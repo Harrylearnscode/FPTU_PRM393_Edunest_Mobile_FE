@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/ui_text.dart';
@@ -115,10 +116,13 @@ class _BookingScreenState extends State<BookingScreen> {
                   ),
                 ),
               ),
-            ...data.bookings.map((booking) {
+            ...data.bookings.asMap().entries.map((entry) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 14),
-                child: _BookingCard(booking: booking),
+                child: _BookingCard(
+                  booking: entry.value,
+                  bookingNumber: entry.key + 1,
+                ),
               );
             }),
           ],
@@ -134,8 +138,9 @@ class _BookingScreenState extends State<BookingScreen> {
 
 class _BookingCard extends StatelessWidget {
   final BookingModel booking;
+  final int bookingNumber;
 
-  const _BookingCard({required this.booking});
+  const _BookingCard({required this.booking, required this.bookingNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -148,10 +153,14 @@ class _BookingCard extends StatelessWidget {
     final canPay = status == 'pending';
     final canCancel = status == 'pending';
 
-    final subjectName = data.subjectNameById(
-      booking.subjectId,
-      fallback: '${t.text('Subject')} #${booking.subjectId ?? '-'}',
-    );
+    final availability = data.availabilityForBooking(booking);
+    final subjectName = availability == null
+        ? data.subjectNameById(booking.subjectId,
+            fallback: t.text('Unknown subject'))
+        : data.availabilitySubjectName(availability);
+    final tutorName = availability?.tutorName.trim().isNotEmpty == true
+        ? availability!.tutorName
+        : t.text('Tutor unavailable');
 
     final statusColor = _getIndicatorColor(status);
 
@@ -192,7 +201,7 @@ class _BookingCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            subjectName,
+                            'Booking #$bookingNumber',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -212,22 +221,52 @@ class _BookingCard extends StatelessWidget {
                     child: Column(
                       children: [
                         _MetaRow(
-                          icon: Icons.tag_rounded,
-                          label: '${t.bookingId}: #${booking.bookingId}',
+                          icon: Icons.menu_book_outlined,
+                          label: '${t.text('Subject')}: $subjectName',
                           iconColor: Colors.blue,
                         ),
                         const SizedBox(height: 6),
                         _MetaRow(
                           icon: Icons.person_outline_rounded,
-                          label: '${t.tutorId}: #${booking.tutorId}',
+                          label: '${t.tutor}: $tutorName',
                           iconColor: Colors.purple,
                         ),
+                        if (availability != null) ...[
+                          const SizedBox(height: 6),
+                          _MetaRow(
+                            icon: Icons.calendar_today_outlined,
+                            label:
+                                '${t.text('Day of week')}: ${availability.dayOfWeek}',
+                            iconColor: Colors.teal,
+                          ),
+                          const SizedBox(height: 6),
+                          _MetaRow(
+                            icon: Icons.access_time_rounded,
+                            label:
+                                '${t.text('Class time')}: ${availability.startTime} - ${availability.endTime}',
+                            iconColor: Colors.orange,
+                          ),
+                          const SizedBox(height: 6),
+                          _MetaRow(
+                            icon: Icons.date_range_outlined,
+                            label:
+                                '${t.text('Course starts')}: ${_formatDate(availability.startCourseTime)}',
+                            iconColor: Colors.indigo,
+                          ),
+                          const SizedBox(height: 6),
+                          _MetaRow(
+                            icon: Icons.event_available_outlined,
+                            label:
+                                '${t.text('Course ends')}: ${_formatDate(availability.endCourseTime)}',
+                            iconColor: Colors.indigo,
+                          ),
+                        ],
                         const SizedBox(height: 6),
                         _MetaRow(
-                          icon: Icons.calendar_month_outlined,
+                          icon: Icons.history_rounded,
                           label:
-                              '${t.availabilityId}: #${booking.availabilityId}',
-                          iconColor: Colors.teal,
+                              '${t.text('Booked on')}: ${_formatDateTime(booking.createdAt)}',
+                          iconColor: Colors.brown,
                         ),
                       ],
                     ),
@@ -255,13 +294,6 @@ class _BookingCard extends StatelessWidget {
                               ),
                             ),
                           ],
-                        ),
-                        Text(
-                          '#${booking.bookingId}',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: colors.onSurface.withOpacity(0.3),
-                            fontWeight: FontWeight.bold,
-                          ),
                         ),
                       ],
                     ),
@@ -327,6 +359,16 @@ class _BookingCard extends StatelessWidget {
       default:
         return Colors.orange;
     }
+  }
+
+  String _formatDate(DateTime value) {
+    if (value.millisecondsSinceEpoch == 0) return '-';
+    return DateFormat('dd/MM/yyyy').format(value.toLocal());
+  }
+
+  String _formatDateTime(DateTime value) {
+    if (value.millisecondsSinceEpoch == 0) return '-';
+    return DateFormat('dd/MM/yyyy HH:mm').format(value.toLocal());
   }
 
   String _payButtonText(BuildContext context, String status) {
