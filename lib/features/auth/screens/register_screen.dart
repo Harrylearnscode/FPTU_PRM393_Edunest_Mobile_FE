@@ -56,7 +56,7 @@ class RegisterScreen extends StatelessWidget {
                   child: AuthLinkButton(
                     icon: Icons.login_rounded,
                     label: t.login,
-                    onPressed: () => context.go('/login'),
+                    onPressed: () => context.push('/login'),
                   ),
                 ),
               ],
@@ -141,7 +141,7 @@ class _RoleRegisterScreenState extends State<RoleRegisterScreen> {
       final encodedEmail = Uri.encodeComponent(email.text.trim());
       final type = isTutor ? 'tutor' : 'learner';
 
-      context.go('/verify-email?email=$encodedEmail&type=$type');
+      context.push('/verify-email?email=$encodedEmail&type=$type');
     } catch (_) {
       // AuthProvider already stores error.
     }
@@ -159,7 +159,7 @@ class _RoleRegisterScreenState extends State<RoleRegisterScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.go('/register'),
+          onPressed: () => context.push('/register'),
         ),
         title: Text(t.signUp),
       ),
@@ -250,7 +250,7 @@ class _RoleRegisterScreenState extends State<RoleRegisterScreen> {
                 child: AuthLinkButton(
                   icon: Icons.login_rounded,
                   label: t.login,
-                  onPressed: () => context.go(loginRoute),
+                  onPressed: () => context.push(loginRoute),
                 ),
               ),
             ],

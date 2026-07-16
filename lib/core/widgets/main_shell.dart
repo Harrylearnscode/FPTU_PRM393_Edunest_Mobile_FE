@@ -100,7 +100,7 @@ class MainShell extends StatelessWidget {
                 return;
               }
 
-              context.go(items[i].path);
+              context.push(items[i].path);
             },
             destinations: items.map((item) {
               return NavigationDestination(

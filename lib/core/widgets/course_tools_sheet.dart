@@ -60,7 +60,7 @@ Future<void> showCourseToolsSheet(
                             location.startsWith('/lessons/'),
                         onTap: () {
                           Navigator.of(dialogContext).pop();
-                          shellContext.go('/lessons');
+                          shellContext.push('/lessons');
                         },
                       ),
                       _CourseToolAction(
@@ -71,7 +71,7 @@ Future<void> showCourseToolsSheet(
                             location.startsWith('/materials/'),
                         onTap: () {
                           Navigator.of(dialogContext).pop();
-                          shellContext.go('/materials');
+                          shellContext.push('/materials');
                         },
                       ),
                     ],

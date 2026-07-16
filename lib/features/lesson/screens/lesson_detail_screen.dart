@@ -118,7 +118,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
             if (context.canPop()) {
               context.pop();
             } else {
-              context.go('/lessons');
+              context.push('/lessons');
             }
           },
         ),

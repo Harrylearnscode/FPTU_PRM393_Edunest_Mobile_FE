@@ -132,7 +132,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
               content:
                   Text(UiText.of(context, listen: false).enrolledSuccessfully)),
         );
-        context.go('/bookings');
+        context.push('/bookings');
       }
     } catch (_) {}
   }

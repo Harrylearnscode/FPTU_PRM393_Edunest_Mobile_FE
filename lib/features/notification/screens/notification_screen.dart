@@ -88,14 +88,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
       case 'StudentCoursePaid':
         break;
       case 'StudentMaterialUploaded':
-        context.go('/materials');
+        context.push('/materials');
         break;
       case 'LessonStartingSoon':
         final lessonId = notification.lessonId;
         if (lessonId == null) {
-          context.go('/lessons');
+          context.push('/lessons');
         } else {
-          context.go('/lessons/$lessonId');
+          context.push('/lessons/$lessonId');
         }
         break;
       default:

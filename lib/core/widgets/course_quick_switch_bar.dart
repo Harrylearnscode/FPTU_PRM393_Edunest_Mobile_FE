@@ -35,7 +35,7 @@ class CourseQuickSwitchBar extends StatelessWidget {
               label: t.lesson,
               selected:
                   location == '/lessons' || location.startsWith('/lessons/'),
-              onTap: () => context.go('/lessons'),
+              onTap: () => context.push('/lessons'),
             ),
             const SizedBox(width: 8),
             _QuickCourseButton(
@@ -43,7 +43,7 @@ class CourseQuickSwitchBar extends StatelessWidget {
               label: t.materials,
               selected: location == '/materials' ||
                   location.startsWith('/materials/'),
-              onTap: () => context.go('/materials'),
+              onTap: () => context.push('/materials'),
             ),
           ],
         ),

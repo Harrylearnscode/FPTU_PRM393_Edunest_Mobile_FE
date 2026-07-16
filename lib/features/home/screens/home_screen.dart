@@ -468,7 +468,7 @@ class _TutorGroupCard extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () =>
-                          context.go('/tutors/${first.tutorId}'),
+                          context.push('/tutors/${first.tutorId}'),
                       icon: const Icon(Icons.badge_rounded),
                       label: Text(t.viewTutorProfile),
                       style: OutlinedButton.styleFrom(
@@ -641,7 +641,7 @@ class _LearnerCourseTile extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(t.enrolledSuccessfully)),
         );
-        context.go('/bookings');
+        context.push('/bookings');
       }
     } catch (_) {}
   }

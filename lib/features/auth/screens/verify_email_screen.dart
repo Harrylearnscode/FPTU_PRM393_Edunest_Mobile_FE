@@ -56,7 +56,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         SnackBar(content: Text(t.emailVerified)),
       );
 
-      context.go(loginRoute);
+      context.push(loginRoute);
     } catch (_) {}
   }
 
@@ -93,7 +93,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.go(loginRoute),
+          onPressed: () => context.push(loginRoute),
         ),
         title: Text(t.verify),
       ),
@@ -176,7 +176,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 child: AuthLinkButton(
                   icon: Icons.arrow_back_rounded,
                   label: t.login,
-                  onPressed: () => context.go(loginRoute),
+                  onPressed: () => context.push(loginRoute),
                 ),
               ),
             ],

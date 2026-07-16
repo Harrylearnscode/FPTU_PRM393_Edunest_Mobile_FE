@@ -55,7 +55,7 @@ class LoginScreen extends StatelessWidget {
                   child: AuthLinkButton(
                     icon: Icons.person_add_alt_1_rounded,
                     label: t.signUp,
-                    onPressed: () => context.go('/register'),
+                    onPressed: () => context.push('/register'),
                   ),
                 ),
               ],
@@ -106,7 +106,7 @@ class _RoleLoginScreenState extends State<RoleLoginScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.go('/login'),
+          onPressed: () => context.push('/login'),
         ),
         title: Text(t.login),
       ),
@@ -181,7 +181,7 @@ class _RoleLoginScreenState extends State<RoleLoginScreen> {
 
                     if (!context.mounted) return;
 
-                    context.go('/home');
+                    context.push('/home');
                   } catch (_) {}
                 },
               ),
@@ -192,9 +192,9 @@ class _RoleLoginScreenState extends State<RoleLoginScreen> {
                   label: t.signUp,
                   onPressed: () {
                     if (widget.type.isTutor) {
-                      context.go('/register/tutor');
+                      context.push('/register/tutor');
                     } else {
-                      context.go('/register/learner');
+                      context.push('/register/learner');
                     }
                   },
                 ),
