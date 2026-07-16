@@ -247,7 +247,7 @@ class _LessonHeaderCard extends StatelessWidget {
     final end = start.add(Duration(minutes: detail.duration));
     final dateStr = DateFormat('dd/MM/yyyy').format(start);
     final timeStr =
-        '${DateFormat('HH:mm').format(start)} â€” ${DateFormat('HH:mm').format(end)}';
+        '${DateFormat('HH:mm').format(start)} - ${DateFormat('HH:mm').format(end)}';
 
     final (statusBg, statusFg, statusBorder) = _statusColors(detail.status);
 

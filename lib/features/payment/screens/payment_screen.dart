@@ -92,7 +92,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       );
 
       if (updated.status.toLowerCase() == 'paid') {
-        context.push('/bookings');
+        context.go('/bookings');
       }
     } catch (_) {
       // ErrorBanner will show provider error.

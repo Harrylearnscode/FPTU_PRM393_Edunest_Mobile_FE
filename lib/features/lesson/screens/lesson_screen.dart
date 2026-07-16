@@ -690,62 +690,77 @@ class _LessonTile extends StatelessWidget {
     final hasLink =
         lesson.meetingLink != null && lesson.meetingLink!.trim().isNotEmpty;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 6, 14, 6),
-      child: Row(
-        children: [
-          // Icon / link button
-          hasLink
-              ? InkWell(
-                  onTap: () =>
-                      _openMeetingLink(context, lesson.meetingLink!.trim()),
+    // Tính toán thời gian bắt đầu và kết thúc
+    final start = lesson.scheduleTime.toLocal();
+    final end = start.add(Duration(minutes: lesson.duration));
+
+    // Tách riêng format ngày và format giờ
+    final dateStr = DateFormat('dd/MM/yyyy').format(start);
+    final timeStr = '${DateFormat('HH:mm').format(start)} - ${DateFormat('HH:mm').format(end)}';
+
+    return InkWell(
+      // 1. Thêm sự kiện bấm để mở lesson_detail
+      onTap: () => context.push('/lessons/${lesson.lessonId}'),
+      borderRadius: BorderRadius.circular(12), // Tạo hiệu ứng bo góc khi nhấn
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10), // Nới lỏng padding một chút để dễ bấm
+        child: Row(
+          children: [
+            // Icon / link button
+            hasLink
+                ? InkWell(
+              onTap: () =>
+                  _openMeetingLink(context, lesson.meetingLink!.trim()),
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  border:
+                  Border.all(color: colors.outlineVariant, width: 0.5),
                   borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      border:
-                          Border.all(color: colors.outlineVariant, width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(Icons.video_call_outlined,
-                        size: 19,
-                        color: colors.onSurface.withValues(alpha: 0.6)),
-                  ),
-                )
-              : Container(
-                  width: 32,
-                  height: 32,
-                  alignment: Alignment.center,
-                  child: Icon(Icons.schedule_outlined,
-                      size: 19,
-                      color: colors.onSurface.withValues(alpha: 0.35)),
                 ),
-
-          const SizedBox(width: 10),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _lessonTimeText(lesson),
-                  style: theme.textTheme.bodyLarge
-                      ?.copyWith(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Booking #${lesson.bookingId} · ${lesson.duration} min',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                      color: colors.onSurface.withValues(alpha: 0.5)),
-                ),
-              ],
+                child: Icon(Icons.video_call_outlined,
+                    size: 19,
+                    color: colors.onSurface.withValues(alpha: 0.6)),
+              ),
+            )
+                : Container(
+              width: 32,
+              height: 32,
+              alignment: Alignment.center,
+              child: Icon(Icons.schedule_outlined,
+                  size: 19,
+                  color: colors.onSurface.withValues(alpha: 0.35)),
             ),
-          ),
 
-          const SizedBox(width: 8),
-          _StatusChip(status: lesson.status),
-        ],
+            const SizedBox(width: 10),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 2. Hiển thị Ngày học ở trên cùng
+                  Text(
+                    dateStr,
+                    style: theme.textTheme.bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 2),
+                  // 3. Thay ID bằng Thời gian bắt đầu và Kết thúc
+                  Text(
+                    '$timeStr · ${lesson.duration} min',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                        color: colors.onSurface.withValues(alpha: 0.5)),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 8),
+            _StatusChip(status: lesson.status),
+          ],
+        ),
       ),
     );
   }
