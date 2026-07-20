@@ -21,6 +21,11 @@ class BookingService {
         .toList();
   }
 
+  Future<AvailabilityModel> getAvailabilityDetail(int availabilityId) async {
+    final res = await apiClient.dio.get('/api/availability/$availabilityId');
+    return AvailabilityModel.fromJson(ApiUtils.asMap(res.data));
+  }
+
   Future<List<AvailabilityModel>> getAvailabilitiesByTutor(int tutorId) async {
     final res = await apiClient.dio.get('/api/availability/tutor/$tutorId');
     return ApiUtils.list(res.data)

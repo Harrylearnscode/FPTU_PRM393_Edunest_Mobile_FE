@@ -123,7 +123,7 @@ class _NotificationTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       color: notification.isRead
           ? colors.surface
-          : colors.primaryContainer.withOpacity(0.45),
+          : colors.primaryContainer.withValues(alpha: 0.45),
       child: ListTile(
         onTap: onTap,
         leading: CircleAvatar(

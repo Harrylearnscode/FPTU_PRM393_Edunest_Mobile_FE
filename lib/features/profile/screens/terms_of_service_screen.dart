@@ -16,7 +16,7 @@ class TermsOfServiceScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _Header(
+          const _Header(
             title: 'TERMS OF SERVICE',
             intro:
                 'By registering, accessing, or using EduNest, you confirm that you have read, understood, and agreed to these Terms of Service, including our data collection and privacy practices.',

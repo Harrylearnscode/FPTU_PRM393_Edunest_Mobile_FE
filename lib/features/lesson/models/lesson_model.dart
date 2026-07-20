@@ -9,6 +9,10 @@ class LessonModel {
   final String? meetingLink;
   final int availabilityId;
   final int availabilitySlot;
+  final DateTime startCourseTime;
+  final DateTime endCourseTime;
+  final String level;
+  final String mode;
   final int tutorId;
   final int tutorUserId;
   final String tutorName;
@@ -26,6 +30,10 @@ class LessonModel {
     required this.meetingLink,
     required this.availabilityId,
     required this.availabilitySlot,
+    required this.startCourseTime,
+    required this.endCourseTime,
+    required this.level,
+    required this.mode,
     required this.tutorId,
     required this.tutorUserId,
     required this.tutorName,
@@ -52,6 +60,30 @@ class LessonModel {
             json['availability']?['slot'] ??
             json['Availability']?['Slot'],
       ),
+      startCourseTime: _asDate(
+        json['startCourseTime'] ??
+            json['StartCourseTime'] ??
+            json['availability']?['startCourseTime'] ??
+            json['Availability']?['StartCourseTime'],
+      ),
+      endCourseTime: _asDate(
+        json['endCourseTime'] ??
+            json['EndCourseTime'] ??
+            json['availability']?['endCourseTime'] ??
+            json['Availability']?['EndCourseTime'],
+      ),
+      level: (json['level'] ??
+                  json['Level'] ??
+                  json['availability']?['level'] ??
+                  json['Availability']?['Level'])
+              ?.toString() ??
+          '',
+      mode: (json['mode'] ??
+                  json['Mode'] ??
+                  json['availability']?['mode'] ??
+                  json['Availability']?['Mode'])
+              ?.toString() ??
+          '',
       tutorId: _asInt(json['tutorId']),
       tutorUserId: _asInt(json['tutorUserId']),
       tutorName:

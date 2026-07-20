@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/providers/auth_provider.dart';
@@ -14,6 +14,7 @@ import '../../features/profile/screens/terms_of_service_screen.dart' as legal;
 import '../../features/booking/screens/booking_screen.dart';
 import '../../features/tutor/screens/tutor_detail_screen.dart';
 import '../../features/booking/screens/create_availability_screen.dart';
+import '../../features/booking/screens/availability_detail_screen.dart';
 import '../../features/chat/screens/chat_screen.dart';
 import '../../features/chat/screens/chat_detail_screen.dart';
 import '../../features/home/screens/home_screen.dart';
@@ -163,6 +164,20 @@ class AppRouter {
         GoRoute(
           path: '/availability/create',
           builder: (_, __) => const CreateAvailabilityScreen(),
+        ),
+        GoRoute(
+          path: '/availability/:id',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+
+            if (id == null) {
+              return const Scaffold(
+                body: Center(child: Text('Invalid availability id')),
+              );
+            }
+
+            return AvailabilityDetailScreen(availabilityId: id);
+          },
         ),
         GoRoute(
           path: '/lessons/:id',

@@ -38,6 +38,7 @@ class AvailabilityModel {
   final double totalCoursePrice;
   final int tutorUserId;
   final String tutorName;
+  final String tutorEmail;
   final bool hasBookings;
   final String? tutorAvatarUrl;
 
@@ -61,6 +62,7 @@ class AvailabilityModel {
     required this.totalCoursePrice,
     required this.tutorUserId,
     required this.tutorName,
+    required this.tutorEmail,
     required this.hasBookings,
     this.tutorAvatarUrl,
   });
@@ -97,6 +99,7 @@ class AvailabilityModel {
       ),
       tutorName:
           json['tutorName']?.toString() ?? 'Tutor #${_asInt(json['tutorId'])}',
+      tutorEmail: _tutorEmail(json),
       hasBookings: json['hasBookings'] == true,
       tutorAvatarUrl: _avatarUrl(
         json['tutorAvatarUrl'] ??
@@ -231,4 +234,13 @@ String? _subjectName(Map<String, dynamic> json) {
 String? _avatarUrl(dynamic value) {
   final text = value?.toString().trim() ?? '';
   return text.isEmpty ? null : text;
+}
+
+String _tutorEmail(Map<String, dynamic> json) {
+  final value = json['tutorEmail'] ??
+      json['TutorEmail'] ??
+      json['tutor']?['email'] ??
+      json['tutor']?['user']?['email'] ??
+      json['tutor']?['user']?['Email'];
+  return value?.toString().trim() ?? '';
 }

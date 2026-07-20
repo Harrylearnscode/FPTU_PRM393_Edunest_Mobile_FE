@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceContainerLow,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0,
         scrolledUnderElevation: 2,
         backgroundColor: Colors.transparent,
@@ -119,7 +120,7 @@ class _TutorCourseList extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   t.noCoursesAvailable,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -159,13 +160,13 @@ class _TutorCourseCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-            color: theme.colorScheme.outlineVariant.withOpacity(0.4)),
+            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -190,8 +191,8 @@ class _TutorCourseCard extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: isActive
-                        ? Colors.green.withOpacity(0.1)
-                        : Colors.orange.withOpacity(0.1),
+                        ? Colors.green.withValues(alpha: 0.1)
+                        : Colors.orange.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -275,7 +276,7 @@ class _TutorCourseCard extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     backgroundColor: isActive
-                        ? theme.colorScheme.errorContainer.withOpacity(0.6)
+                        ? theme.colorScheme.errorContainer.withValues(alpha: 0.6)
                         : theme.colorScheme.secondaryContainer,
                     foregroundColor: isActive
                         ? theme.colorScheme.error
@@ -296,7 +297,7 @@ class _TutorCourseCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.4),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -421,13 +422,13 @@ class _TutorGroupCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-            color: theme.colorScheme.outlineVariant.withOpacity(0.3)),
+            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Theme(
@@ -441,7 +442,7 @@ class _TutorGroupCard extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                  color: theme.colorScheme.primary.withOpacity(0.2), width: 3),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.2), width: 3),
             ),
             child: UserAvatar(
               imageUrl: first.tutorAvatarUrl,
@@ -454,7 +455,10 @@ class _TutorGroupCard extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           subtitle: Text(
-            t.activeCoursesOpen(courses.length),
+            [
+              if (first.tutorEmail.isNotEmpty) first.tutorEmail,
+              t.activeCoursesOpen(courses.length),
+            ].join(' • '),
             style: TextStyle(
                 fontSize: 13, color: theme.colorScheme.onSurfaceVariant),
           ),
@@ -467,8 +471,7 @@ class _TutorGroupCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () =>
-                          context.push('/tutors/${first.tutorId}'),
+                      onPressed: () => context.push('/tutors/${first.tutorId}'),
                       icon: const Icon(Icons.badge_rounded),
                       label: Text(t.viewTutorProfile),
                       style: OutlinedButton.styleFrom(
@@ -488,8 +491,6 @@ class _TutorGroupCard extends StatelessWidget {
       ),
     );
   }
-
-
 }
 
 class _LearnerCourseTile extends StatelessWidget {
@@ -507,112 +508,117 @@ class _LearnerCourseTile extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    _subjectText(context, availability),
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.secondary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    t.mode(availability.mode),
-                    style: TextStyle(
-                        fontSize: 11,
-                        color: theme.colorScheme.secondary,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                _buildSmallInfo(
-                    theme, Icons.event_rounded, availability.dayOfWeek),
-                const SizedBox(width: 16),
-                _buildSmallInfo(theme, Icons.schedule_rounded,
-                    '${availability.startTime} - ${availability.endTime}'),
-              ],
-            ),
-            if (_offlineAreas(availability).isNotEmpty) ...[
-              const SizedBox(height: 10),
+      child: GestureDetector(
+        onTap: () =>
+            context.push('/availability/${availability.availabilityId}'),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.location_on_outlined,
-                    size: 14,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      _offlineAreas(availability),
+                      _subjectText(context, availability),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      t.mode(availability.mode),
                       style: TextStyle(
-                        fontSize: 12,
-                        color: theme.colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w500,
-                      ),
+                          fontSize: 11,
+                          color: theme.colorScheme.secondary,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
               ),
-            ],
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(t.fullTuitionPackage,
-                          style: TextStyle(
-                              fontSize: 11,
-                              color: theme.colorScheme.onSurfaceVariant)),
-                      MoneyText(
-                        total,
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  _buildSmallInfo(
+                      theme, Icons.event_rounded, availability.dayOfWeek),
+                  const SizedBox(width: 16),
+                  _buildSmallInfo(theme, Icons.schedule_rounded,
+                      '${availability.startTime} - ${availability.endTime}'),
+                ],
+              ),
+              if (_offlineAreas(availability).isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 14,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        _offlineAreas(availability),
                         style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 18,
-                          color: theme.colorScheme.primary,
+                          fontSize: 12,
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                FilledButton(
-                  onPressed:
-                      data.loading ? null : () => _book(context, availability),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text(t.enrollNow,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ],
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(t.fullTuitionPackage,
+                            style: TextStyle(
+                                fontSize: 11,
+                                color: theme.colorScheme.onSurfaceVariant)),
+                        MoneyText(
+                          total,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 18,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  FilledButton(
+                    onPressed: data.loading
+                        ? null
+                        : () => _book(context, availability),
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: Text(t.enrollNow,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
