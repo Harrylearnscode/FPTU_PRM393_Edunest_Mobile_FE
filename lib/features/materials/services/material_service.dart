@@ -22,8 +22,9 @@ class MaterialService {
       return _materialSectionsFromResponse(res.data,
           availabilityId: availabilityId);
     } on DioException catch (error) {
-      if (error.response?.statusCode == 404)
+      if (error.response?.statusCode == 404) {
         return <CourseMaterialSectionModel>[];
+      }
       rethrow;
     }
   }

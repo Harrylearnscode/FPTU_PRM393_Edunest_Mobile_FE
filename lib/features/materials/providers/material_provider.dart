@@ -27,8 +27,9 @@ class MaterialProvider extends ChangeNotifier {
   }
 
   Future<void> loadCourseMaterials(int availabilityId, {bool force = false}) {
-    if (!force && _loads[availabilityId] != null)
+    if (!force && _loads[availabilityId] != null) {
       return _loads[availabilityId]!;
+    }
     if (!force &&
         courseMaterials.containsKey(availabilityId) &&
         _isFresh(_loadedAt[availabilityId])) {

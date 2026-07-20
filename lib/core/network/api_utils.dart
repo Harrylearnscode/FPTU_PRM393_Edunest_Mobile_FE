@@ -18,8 +18,9 @@ class ApiUtils {
       }
       if (data is String && data.trim().isNotEmpty) return data;
       final statusCode = error.response?.statusCode;
-      if (statusCode != null)
+      if (statusCode != null) {
         return 'Request failed with status code $statusCode';
+      }
       return error.message ?? 'Network error';
     }
     return error.toString();

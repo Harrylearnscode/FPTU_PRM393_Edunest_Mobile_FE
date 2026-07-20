@@ -53,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text(
           t.personalProfile,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
         elevation: 0,
@@ -109,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: theme.colorScheme.error,
                     side: BorderSide(
-                      color: theme.colorScheme.error.withOpacity(0.5),
+                      color: theme.colorScheme.error.withValues(alpha: 0.5),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -124,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: const Icon(Icons.logout_rounded),
                   label: Text(
                     t.logOut,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
@@ -278,7 +278,7 @@ class _HeaderCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -293,7 +293,7 @@ class _HeaderCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: theme.colorScheme.primary.withOpacity(0.2),
+                    color: theme.colorScheme.primary.withValues(alpha: 0.2),
                     width: 4,
                   ),
                 ),
@@ -390,7 +390,7 @@ class _HeaderCard extends StatelessWidget {
                 fontSize: 12,
               ),
             ),
-            backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
+            backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.1),
             side: BorderSide.none,
             labelStyle: TextStyle(color: theme.colorScheme.primary),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -447,8 +447,8 @@ class _ProfileForm extends StatelessWidget {
         ),
         filled: true,
         fillColor: enabled
-            ? theme.colorScheme.surfaceContainerHighest.withOpacity(0.2)
-            : theme.colorScheme.surfaceContainerHighest.withOpacity(0.6),
+            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.2)
+            : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
       );
     }
 
@@ -526,7 +526,7 @@ class _ProfileForm extends StatelessWidget {
                 icon: const Icon(Icons.save_rounded),
                 label: Text(
                   t.saveChanges,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -572,7 +572,7 @@ class _LegalCard extends StatelessWidget {
             ),
             title: Text(
               t.termsOfService,
-              style: TextStyle(fontWeight: FontWeight.w800),
+              style: const TextStyle(fontWeight: FontWeight.w800),
             ),
             subtitle: Text(t.termsOfServiceSubtitle),
             trailing: const Icon(Icons.chevron_right_rounded),
@@ -605,7 +605,7 @@ class _TileIcon extends StatelessWidget {
       width: 42,
       height: 42,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.65),
+        color: color.withValues(alpha: 0.65),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Icon(icon, color: iconColor),

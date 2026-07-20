@@ -55,7 +55,7 @@ class _BookingScreenState extends State<BookingScreen> {
               icon: const Icon(Icons.refresh_rounded),
               style: IconButton.styleFrom(
                 backgroundColor:
-                    colors.surfaceContainerHighest.withOpacity(0.3),
+                    colors.surfaceContainerHighest.withValues(alpha: 0.3),
               ),
             ),
           ),
@@ -89,7 +89,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: colors.primary.withOpacity(0.1),
+                          color: colors.primary.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -171,13 +171,13 @@ class _BookingCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: colors.outlineVariant.withOpacity(0.4),
+          color: colors.outlineVariant.withValues(alpha: 0.4),
           width: 1,
         ),
       ),
@@ -526,7 +526,7 @@ class _MetaRow extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
+            color: iconColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Icon(
@@ -656,20 +656,20 @@ class _StatusChip extends StatelessWidget {
       case 'paid':
       case 'completed':
         return (
-          Colors.green.withOpacity(0.12),
+          Colors.green.withValues(alpha: 0.12),
           Colors.green.shade800,
         );
       case 'cancelled':
       case 'expired':
       case 'failed':
         return (
-          Colors.red.withOpacity(0.12),
+          Colors.red.withValues(alpha: 0.12),
           Colors.red.shade800,
         );
       case 'pending':
       default:
         return (
-          Colors.orange.withOpacity(0.12),
+          Colors.orange.withValues(alpha: 0.12),
           Colors.orange.shade800,
         );
     }

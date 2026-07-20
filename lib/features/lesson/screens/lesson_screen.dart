@@ -459,7 +459,7 @@ class _LearnerAvailabilityGroup extends StatelessWidget {
                   ?.copyWith(fontWeight: FontWeight.w600),
             ),
             subtitle: Text(
-              '${t.availabilityNumber(first.availabilityId)} - ${t.lessonsN(sorted.length)}',
+              '${_courseDateRange(first)} • ${first.level} • ${first.mode} - ${t.lessonsN(sorted.length)}',
               style: theme.textTheme.bodyLarge
                   ?.copyWith(color: colors.onSurface.withValues(alpha: 0.5)),
             ),
@@ -696,43 +696,45 @@ class _LessonTile extends StatelessWidget {
 
     // Tách riêng format ngày và format giờ
     final dateStr = DateFormat('dd/MM/yyyy').format(start);
-    final timeStr = '${DateFormat('HH:mm').format(start)} - ${DateFormat('HH:mm').format(end)}';
+    final timeStr =
+        '${DateFormat('HH:mm').format(start)} - ${DateFormat('HH:mm').format(end)}';
 
     return InkWell(
       // 1. Thêm sự kiện bấm để mở lesson_detail
       onTap: () => context.push('/lessons/${lesson.lessonId}'),
       borderRadius: BorderRadius.circular(12), // Tạo hiệu ứng bo góc khi nhấn
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10), // Nới lỏng padding một chút để dễ bấm
+        padding: const EdgeInsets.fromLTRB(
+            14, 10, 14, 10), // Nới lỏng padding một chút để dễ bấm
         child: Row(
           children: [
             // Icon / link button
             hasLink
                 ? InkWell(
-              onTap: () =>
-                  _openMeetingLink(context, lesson.meetingLink!.trim()),
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  border:
-                  Border.all(color: colors.outlineVariant, width: 0.5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(Icons.video_call_outlined,
-                    size: 19,
-                    color: colors.onSurface.withValues(alpha: 0.6)),
-              ),
-            )
+                    onTap: () =>
+                        _openMeetingLink(context, lesson.meetingLink!.trim()),
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: colors.outlineVariant, width: 0.5),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.video_call_outlined,
+                          size: 19,
+                          color: colors.onSurface.withValues(alpha: 0.6)),
+                    ),
+                  )
                 : Container(
-              width: 32,
-              height: 32,
-              alignment: Alignment.center,
-              child: Icon(Icons.schedule_outlined,
-                  size: 19,
-                  color: colors.onSurface.withValues(alpha: 0.35)),
-            ),
+                    width: 32,
+                    height: 32,
+                    alignment: Alignment.center,
+                    child: Icon(Icons.schedule_outlined,
+                        size: 19,
+                        color: colors.onSurface.withValues(alpha: 0.35)),
+                  ),
 
             const SizedBox(width: 10),
 
@@ -867,6 +869,11 @@ String _lessonTimeText(LessonModel lesson) {
   final end = start.add(Duration(minutes: lesson.duration));
   return '${DateFormat('dd/MM/yyyy HH:mm').format(start)} - '
       '${DateFormat('HH:mm').format(end)}';
+}
+
+String _courseDateRange(LessonModel lesson) {
+  return '${DateFormat('dd/MM/yyyy').format(lesson.startCourseTime.toLocal())} - '
+      '${DateFormat('dd/MM/yyyy').format(lesson.endCourseTime.toLocal())}';
 }
 
 String _sessionKey(LessonModel lesson) =>
